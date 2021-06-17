@@ -2,6 +2,7 @@ package io.jay.kafka.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jay.kafka.domain.LibraryEvent;
+import io.jay.kafka.domain.LibraryEventType;
 import io.jay.kafka.producer.LibraryEventProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,28 +26,22 @@ public class LibraryEventsController {
     @PostMapping("/v1/libraryEvent")
     public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException {
 
-        log.info("before SendLibraryEvent");
+        libraryEvent.setLibraryEventType(LibraryEventType.NEW);
         libraryEventProducer.sendLibraryEvent(libraryEvent);
-        log.info("after sendLibraryEvent");
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }
 
     @PostMapping("/v1/sync/libraryEvent")
     public ResponseEntity<LibraryEvent> postLibraryEventSync(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
 
-        log.info("before SendLibraryEvent");
         SendResult<Integer,String> sendResult = libraryEventProducer.sendLibraryEventSynchronous(libraryEvent);
         log.info("SendResult is : {}", sendResult.toString());
-        log.info("after sendLibraryEvent");
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }
 
     @PostMapping("/v1/pr/libraryEvent")
     public ResponseEntity<LibraryEvent> postLibraryEventProducerRecord(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
-
-        log.info("before SendLibraryEvent");
         libraryEventProducer.sendLibraryEventUsingProduceRecord(libraryEvent);
-        log.info("after sendLibraryEvent");
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }
 }

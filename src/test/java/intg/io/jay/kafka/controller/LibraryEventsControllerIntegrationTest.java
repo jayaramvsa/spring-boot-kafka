@@ -9,6 +9,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -51,6 +52,7 @@ public class LibraryEventsControllerIntegrationTest {
     }
 
     @Test
+    @Timeout(5)
     void postLibraryEvent() throws InterruptedException {
 
         //given
@@ -66,7 +68,7 @@ public class LibraryEventsControllerIntegrationTest {
 
         //then
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        Thread.sleep(3);
+        //Thread.sleep(3);
         ConsumerRecord<Integer,String> consumerRecord = KafkaTestUtils.getSingleRecord(consumer,"library-events");
         String messageValue = consumerRecord.value();
         String expectedMessage = "{\"libraryEventId\":1,\"libraryEventType\":\"NEW\",\"book\":{\"bookId\":1,\"bookName\":\"How To Train a Dragon\",\"bookAuthor\":\"Hamang Lee\"}}";

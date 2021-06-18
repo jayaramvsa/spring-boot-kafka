@@ -51,7 +51,7 @@ public class LibraryEventsControllerIntegrationTest {
     }
 
     @Test
-    void postLibraryEvent() {
+    void postLibraryEvent() throws InterruptedException {
 
         //given
         Book book = Book.builder().bookId(1).bookAuthor("Hamang Lee").bookName("How To Train a Dragon").build();
@@ -66,7 +66,7 @@ public class LibraryEventsControllerIntegrationTest {
 
         //then
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-
+        Thread.sleep(3);
         ConsumerRecord<Integer,String> consumerRecord = KafkaTestUtils.getSingleRecord(consumer,"library-events");
         String messageValue = consumerRecord.value();
         String expectedMessage = "{\"libraryEventId\":1,\"libraryEventType\":\"NEW\",\"book\":{\"bookId\":1,\"bookName\":\"How To Train a Dragon\",\"bookAuthor\":\"Hamang Lee\"}}";

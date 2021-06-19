@@ -1,14 +1,13 @@
 package io.jay.kafka.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +17,7 @@ import java.util.stream.Collectors;
 public class LibraryEventsControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleRequestBody(MethodArgumentNotValidException ex) {
         List<FieldError> fieldErrorList = ex.getBindingResult().getFieldErrors();
         String errorMessage = fieldErrorList.stream()

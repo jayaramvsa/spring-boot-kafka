@@ -25,7 +25,7 @@ public class LibraryEventsController {
     LibraryEventProducer libraryEventProducer;
 
     @PostMapping("/v1/libraryEvent")
-    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody @Valid LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody @Valid LibraryEvent libraryEvent) throws Exception {
 
         libraryEvent.setLibraryEventType(LibraryEventType.NEW);
         libraryEventProducer.sendLibraryEvent(libraryEvent);
@@ -41,7 +41,7 @@ public class LibraryEventsController {
     }
 
     @PostMapping("/v1/pr/libraryEvent")
-    public ResponseEntity<LibraryEvent> postLibraryEventProducerRecord(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<LibraryEvent> postLibraryEventProducerRecord(@RequestBody @Valid LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
         libraryEventProducer.sendLibraryEventUsingProduceRecord(libraryEvent);
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }

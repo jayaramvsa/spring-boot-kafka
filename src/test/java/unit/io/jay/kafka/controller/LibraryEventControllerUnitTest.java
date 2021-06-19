@@ -47,4 +47,21 @@ public class LibraryEventControllerUnitTest {
         mockMvc.perform(post("/v1/libraryEvent").content(json).
                 contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
     }
+
+    @Test
+    void postLibraryEventIs4xx() throws Exception {
+        //given
+        Book book = Book.builder().bookId(null).bookAuthor(null).bookName("How to train your Dragon").build();
+        LibraryEvent libraryEvent = LibraryEvent.builder().libraryEventId(null).book(book).build();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Content-type", MediaType.APPLICATION_JSON.toString());
+        HttpEntity<LibraryEvent> request = new HttpEntity<LibraryEvent>(libraryEvent, httpHeaders);
+        String json = objectMapper.writeValueAsString(libraryEvent);
+        doNothing().when(libraryEventProducer).sendLibraryEventUsingProduceRecord(isA(LibraryEvent.class));
+
+        //expect
+        mockMvc.perform(post("/v1/libraryEvent").content(json).
+                contentType(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
+    }
 }
